@@ -2,7 +2,7 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Parallel Distributed Key Value Store by anishjain89</title>
+    <title>Parallel Distributed Key-Value Store by anishjain89</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -11,7 +11,7 @@
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">Parallel Distributed Key Value Store</h1>
+      <h1 class="project-name">Parallel Distributed Key-Value Store</h1>
       <h2 class="project-tagline">A 15-418 project by Anish Jain(anishj) and Subodh Asthana(sasthana)</h2>
       <a href="https://github.com/anishjain89/15418" class="btn">View on GitHub</a>
       <a href="https://github.com/anishjain89/15418/zipball/master" class="btn">Download .zip</a>
@@ -19,19 +19,20 @@
     </section>
 
     <section class="main-content">
-      <h3>
-<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SUMMARY</h3>
+      <h2>
+<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SUMMARY</h2>
 
-<p>To design a parallel, scalable distributed key-value store which scales using consistent hashing on a cluster of Raspberry Pis</p>
+<p>To design a parallel, scalable distributed key-value store which scales using consistent hashing on a cluster of Raspberry Pis.</p>
 
-<h3>
-<a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BACKGROUND</h3>
+<h2>
+<a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BACKGROUND</h2>
 
 <p>Our key-value store supports the following operations:</p>
 
 <ul>
 <li>PUT: Insert/Update a new/existing key-value pair</li>
 <li>GET: Retrieve the value associated with a given key</li>
+<li>DEL: Remove a key-value pair from the database</li>
 </ul>
 
 <p>Distributing the database across several nodes provides multi-faceted advantages:</p>
@@ -41,31 +42,21 @@
 <li>Storage load is amortized across multiple nodes</li>
 </ul>
 
-<p>The basic architecture consists of a central coordinator and several storage nodes. The clients send requests to the coordinator which routes the requests to appropriate storage nodes. Request routing decisions are taken based on a consistent-hashing ring. The central coordinator has information about all the storage nodes present in the system. Based on the observed load, it takes scaling decisions where addition/deletion of storage nodes is handled using consistent hashing. Migration of data between storage nodes during scaling is handled in the background as soft updates so that there is no downtime. Storage nodes store the key-value pairs assigned to it in-memory and service requests. We'll be programming in Go as it enables parallelism via low-cost goroutines. The GoRPC package spawns a new goroutine for each request which enables parallelism across multiple requests. </p>
+<p>The basic architecture consists of a central coordinator and several storage nodes. The clients send requests to the coordinator which routes the requests to appropriate storage nodes. Request routing decisions are taken based on a consistent-hashing ring. The central coordinator has information about all the storage nodes present in the system. Based on the storage load on individual storage nodes, it takes scaling decisions where addition/deletion of storage nodes is handled using consistent hashing. Migration of data between storage nodes during scaling is handled in the background so that there is no downtime. Storage nodes store the key-value pairs assigned to it in-memory and service requests routed to it. We'll be programming our project in Go as it enables parallelism via low-cost goroutines. The GoRPC package spawns a new goroutine for each request which enables parallelism across multiple requests. </p>
 
-<h3>
-<a id="challenge" class="anchor" href="#challenge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CHALLENGE</h3>
+<h2>
+<a id="challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CHALLENGES</h2>
 
 <p>A few challenges that we foresee:</p>
 
 <ul>
 <li>Setting up the cluster of Raspberry Pis: We need to understand how basic CPU usage + networking of the Raspberry Pis work, and also need to make sure that they can talk to each other on a local network. For our prototyping, we'll be connecting the Pis on a local network using switch/hub. </li>
 <li>Setting up the software framework so that all the nodes in the system have required communication channels set up.</li>
-<li>Correctly implementing consistent hashing: This is the crux of our project. We need to ensure that every request is being sent to the appropriate storage node based on it's key following the correct semantics of consistent hashing. We also need to ensure during scale-in/scale-out data migration based on keys are correct.
-A few addons that we want to explore if time permits:</li>
-<li>Replication of data across multiple storage nodes for basic fault tolerance/improved throughput using PAXOS or 2 phase commits</li>
-<li>Optimizing the system for large "value" objects like images, audio files
-
-<ul>
-<li>Replicating the functionality of the single coordinator</li>
-</ul>
-</li>
-<li>Persisting the in-memory key-value store on flash to make the data durable</li>
-<li>Comparing the performance of C/C++ implementation of the same design vs Go to get an idea of efficiency of touted go routines vs worker threads</li>
+<li>Correctly implementing consistent hashing: This is the crux of our project. We need to ensure that every request is being sent to the appropriate storage node based on it's key following the correct semantics of consistent hashing. We also need to ensure that during scale-in/scale-out data migration based on keys is correct.</li>
 </ul>
 
-<h3>
-<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RESOURCES</h3>
+<h2>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RESOURCES</h2>
 
 <ul>
 <li>Hardware
@@ -84,17 +75,70 @@ A few addons that we want to explore if time permits:</li>
 </li>
 </ul>
 
-<h3>
-<a id="platform-choice" class="anchor" href="#platform-choice" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PLATFORM CHOICE</h3>
+<h2>
+<a id="goals-and-deliverables" class="anchor" href="#goals-and-deliverables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GOALS AND DELIVERABLES</h2>
+
+<ul>
+<li>A basic system with all the communication channels set up between the nodes
+We want to build a basic system which with storage nodes labelled such that they follow the semantics of consistent hashing. We will need to prototype and test the RPC functionality by passing known objects between different nodes in the system.</li>
+<li>Prototyping scale-out/scale-in
+Fine-tune parameters to find out the correct mix of nodes for different workloads. Ensure that the addition/deletion and migration of data is correct as per the consistent hashing semantics. Profile the behavior of Pis as the in-memory hash tables grow big.</li>
+</ul>
 
 <h3>
-<a id="goals-and-deliverables" class="anchor" href="#goals-and-deliverables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GOALS AND DELIVERABLES</h3>
+<a id="add-on-goals" class="anchor" href="#add-on-goals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ADD-ON GOALS</h3>
+
+<p>A few addons that we want to explore if time permits:</p>
+
+<ul>
+<li>Replication of data across multiple storage nodes for basic fault tolerance/improved throughput using PAXOS or 2 phase commits</li>
+<li>Optimizing the system for large "value" objects like images, audio files
+
+<ul>
+<li>Replicating the functionality of the single coordinator</li>
+</ul>
+</li>
+<li>Persisting the in-memory key-value store on flash to make the data durable</li>
+<li>Comparing the performance of C/C++ implementation of the same design vs Go to get an idea of efficiency of touted go routines vs worker threads</li>
+</ul>
 
 <h3>
-<a id="schedule" class="anchor" href="#schedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SCHEDULE</h3>
+<a id="planned-demo" class="anchor" href="#planned-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PLANNED DEMO</h3>
+
+<p>We hope to demo a working model of this proposed small-scale key-value architecture. We would demonstrate all the features guaranteed by our system namely put, get, delete, node join, node exit. We also hope to compare the performance of this distributed key-value store against a single node version of it.</p>
+
+<h3>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PERFORMANCE</h3>
+
+<ul>
+<li>As of now it would be difficult for us to predict the performance specifics because:
+
+<ul>
+<li>We are new to Raspberry Pis and therefore we would need to profile the system with our workloads.</li>
+<li>We think that the performance of the system will change as we increase the size of "values" associated with each key.</li>
+</ul>
+</li>
+<li>We hope that the performance of our N storage nodes version of distributed key-value store to be at least K times better than the single node version where K &lt;= N</li>
+</ul>
+
+<h2>
+<a id="platform-choice" class="anchor" href="#platform-choice" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PLATFORM CHOICE</h2>
+
+<p>Raspberry Pis are cheap and power efficient and provides fast access to persistent storage (flash vs disks). Pis are readily accessible and therefore we hope that our project can be used by other students to play around with simple distributed systems for academic purposes. Golang is used as it's an effective systems programming language to design thread-safe efficient parallel distributed systems.</p>
+
+<h2>
+<a id="schedule" class="anchor" href="#schedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SCHEDULE</h2>
+
+<ul>
+<li>April 4 - April 10 - Setting up the cluster (hardware and software). Familiarizing ourselves with GoLang.</li>
+<li>April 11 - April 17 - Implementing communication framework. Design software APIs. Read up on consistent hashing. </li>
+<li>April 18 - April 24 - Implement correct version of consistent hashing. Come up with workloads to test the system.</li>
+<li>April 25 - May 1 - Implement scaling with data migration. Fine tune scaling parameters.</li>
+<li>May 2 - May 8 - Make the system robust. Work on future goals. Make final presentation. Demo!!!</li>
+</ul>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/anishjain89/15418">Parallel Distributed Key Value Store</a> is maintained by <a href="https://github.com/anishjain89">anishjain89</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/anishjain89/15418">Parallel Distributed Key-Value Store</a> is maintained by <a href="https://github.com/anishjain89">anishjain89</a>.</span>
 
         <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
