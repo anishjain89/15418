@@ -145,10 +145,13 @@
 </h2>
 
 <ul>
-<li>April 4 - April 10: Setting up the cluster (hardware and software). Familiarizing ourselves with GoLang.</li>
-<li>April 11 - April 17: Implementing communication framework. Design software APIs. Read up on consistent hashing. </li>
-<li>April 18 - April 24: Implement correct version of consistent hashing. Come up with workloads to test the system.</li>
-<li>April 25 - May 1: Implement scaling with data migration. Fine tune scaling parameters.</li>
+<li>April 4 - April 10: Familiarizing ourselves with GoLang and read up on consistent hashing.</li>
+<li>April 11 - April 17: Implementing communication framework. Design software APIs. </li>
+<li>April 18 - April 20: Implement correct version of consistent hashing.</li>
+<li>April 21 - April 24: Come up with workloads to test the system and setup cluster on Raspberry Pis.<br>
+</li>
+<li>April 25 - April 28: Implement scaling with data migration. </li>
+<li>April 29 - May 1: Fine tune scaling parameters.</li>
 <li>May 2 - May 8: Make the system robust. Work on future goals. Make final presentation. Demo!!!</li>
 </ul>
 
@@ -163,21 +166,22 @@
 
 <p>So far we have achieved the following:</p>
 
-<p>1)  We have started the project by reading upon consistent hashing. We tried to understand how it works, what are its advantages and found out what are some simple ideas that we can use to implement in our project.</p>
-
-<p>2)  We are new to GoLang therefore we read up on that and few presentations about it. We wrote few simple programs initially to get used to GoLang.</p>
-
-<p>3)  We have written simple programs in GoLang to test if we are able to communicate between nodes. For now our communication assumes that the IP addresses of the nodes participating in communication are known already. We plan to build node discovery framework so that in case of dynamic IP addresses we are able to communicate with the devices. We still will assume that the IP address of the master node is known to all the slave nodes.</p>
-
-<p>4)  Having done this we also experimented with the goRPC package to transfer data between the nodes. We plan to use goRPC extensively in our project for GET/PUT requests therefore getting it to work correctly was crucial.</p>
+<ul>
+<li><p>We have started the project by reading upon consistent hashing. We tried to understand how it works, what are its advantages and found out what are some simple ideas that we can use to implement in our project.</p></li>
+<li><p>We are new to GoLang therefore we read up on that and few presentations about it. We wrote few simple programs initially to get used to GoLang.</p></li>
+<li><p>We have written simple programs in GoLang to test if we are able to communicate between nodes. For now our communication assumes that the IP addresses of the nodes participating in communication are known already. We plan to build node discovery framework so that in case of dynamic IP addresses we are able to communicate with the devices. We still will assume that the IP address of the master node is known to all the slave nodes.</p></li>
+<li><p>Having done this we also experimented with the goRPC package to transfer data between the nodes. We plan to use goRPC extensively in our project for GET/PUT requests therefore getting it to work correctly was crucial.</p></li>
+</ul>
 
 <h3>
 <a id="major-concerns" class="anchor" href="#major-concerns" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MAJOR CONCERNS</h3>
 
 <hr>
 
-<p>We don’t have access to Raspberry Pis yet and most of our development is being done using the GHC machines. We will still need some time to setup the cluster. Particularly, we think that most of our time while setting up the cluster will be spent on installing and bringing up the Go compiler assuming that we won’t face much trouble with the default unix distribution that comes with Pi.
-We are still deciding what will be the best type of value object that we want to use to demo our key-value store so that we can highlight the benefits of Raspberry Pis, if there are any. For now we are considering either small String phrases or 1 MB image files. We plan to experiment with both kind of value objects and see how our system performs. </p>
+<ul>
+<li><p>We don’t have access to Raspberry Pis yet and most of our development is being done using the GHC machines. We will still need some time to setup the cluster. Particularly, we think that most of our time while setting up the cluster will be spent on installing and bringing up the Go compiler assuming that we won’t face much trouble with the default unix distribution that comes with Pi.</p></li>
+<li><p>We are still deciding what will be the best type of value object that we want to use to demo our key-value store so that we can highlight the benefits of Raspberry Pis, if there are any. For now we are considering either small String phrases or 1 MB image files. We plan to experiment with both kind of value objects and see how our system performs. </p></li>
+</ul>
 
 <h3>
 <a id="old-goals" class="anchor" href="#old-goals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>OLD GOALS</h3>
@@ -186,9 +190,10 @@ We are still deciding what will be the best type of value object that we want to
 
 <p>Our proposed goals were to implement a Key-Value store with GET, PUT and DEL API support. We were hoping to demonstrate the dynamic scale-in/scale-out of the nodes using consistent hashing as the load on the system increases or decreases. This load can be described along two axes:</p>
 
-<p>1)  Memory overhead on a single data node</p>
-
-<p>2)  Number of requests that are seen by a single data node</p>
+<ul>
+<li><p>Memory overhead on a single data node</p></li>
+<li><p>Number of requests that are seen by a single data node</p></li>
+</ul>
 
 <p>As we scale-in/scale-out the cluster of Pis we were planning to compare its perf/watt and perf/dollar to a regular commercial machine.</p>
 
