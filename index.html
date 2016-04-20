@@ -19,7 +19,9 @@
     </section>
 
     <section class="main-content">
-      <h2>
+      <p><a href="#SUMMARY">SUMMARY</a></p>
+
+<h2>
 <a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>SUMMARY</strong>
 </h2>
 
@@ -149,6 +151,54 @@
 <li>April 25 - May 1: Implement scaling with data migration. Fine tune scaling parameters.</li>
 <li>May 2 - May 8: Make the system robust. Work on future goals. Make final presentation. Demo!!!</li>
 </ul>
+
+<h2>
+<a id="checkpoint-report" class="anchor" href="#checkpoint-report" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>CHECKPOINT REPORT</strong>
+</h2>
+
+<h3>
+<a id="summary-1" class="anchor" href="#summary-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SUMMARY</h3>
+
+<hr>
+
+<p>So far we have achieved the following:</p>
+
+<p>1)  We have started the project by reading upon consistent hashing. We tried to understand how it works, what are its advantages and found out what are some simple ideas that we can use to implement in our project.</p>
+
+<p>2)  We are new to GoLang therefore we read up on that and few presentations about it. We wrote few simple programs initially to get used to GoLang.</p>
+
+<p>3)  We have written simple programs in GoLang to test if we are able to communicate between nodes. For now our communication assumes that the IP addresses of the nodes participating in communication are known already. We plan to build node discovery framework so that in case of dynamic IP addresses we are able to communicate with the devices. We still will assume that the IP address of the master node is known to all the slave nodes.</p>
+
+<p>4)  Having done this we also experimented with the goRPC package to transfer data between the nodes. We plan to use goRPC extensively in our project for GET/PUT requests therefore getting it to work correctly was crucial.</p>
+
+<h3>
+<a id="major-concerns" class="anchor" href="#major-concerns" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MAJOR CONCERNS</h3>
+
+<hr>
+
+<p>We don’t have access to Raspberry Pis yet and most of our development is being done using the GHC machines. We will still need some time to setup the cluster. Particularly, we think that most of our time while setting up the cluster will be spent on installing and bringing up the Go compiler assuming that we won’t face much trouble with the default unix distribution that comes with Pi.
+We are still deciding what will be the best type of value object that we want to use to demo our key-value store so that we can highlight the benefits of Raspberry Pis, if there are any. For now we are considering either small String phrases or 1 MB image files. We plan to experiment with both kind of value objects and see how our system performs. </p>
+
+<h3>
+<a id="old-goals" class="anchor" href="#old-goals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>OLD GOALS</h3>
+
+<hr>
+
+<p>Our proposed goals were to implement a Key-Value store with GET, PUT and DEL API support. We were hoping to demonstrate the dynamic scale-in/scale-out of the nodes using consistent hashing as the load on the system increases or decreases. This load can be described along two axes:</p>
+
+<p>1)  Memory overhead on a single data node</p>
+
+<p>2)  Number of requests that are seen by a single data node</p>
+
+<p>As we scale-in/scale-out the cluster of Pis we were planning to compare its perf/watt and perf/dollar to a regular commercial machine.</p>
+
+<h3>
+<a id="new-goals" class="anchor" href="#new-goals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NEW GOALS</h3>
+
+<hr>
+
+<p>Our goals for the project are pretty much the same as we had initially proposed. In context of what would be feasible to demo on the project presentation day we think we will demonstrate scale-out of the cluster. We plan to make nodes Join the cluster as the load on a single data node increases so that performance comparable to (or some factor of) commercial machines can be achieved. Therefore we hope to demo node addition and data migration among the nodes as one of the tests.  Apart from that we plan to show graph of average response times as the number of clients grow, performance/watt and performance/dollar. For the performance/watt we, for now, plan to use the power numbers that are mentioned in the hardware specification document of the concerned machines that we are using. One of the things that we had planned initially to demonstrate but might not do it for the final presentation is to demonstrate the scale-in of the cluster. This is primarily because as of now we are not sure what heuristics to use to scale-in the cluster. If we are able to come up with a good heuristic and test in time then we can certainly demonstrate that as well.
+To perform a live demo we need to go forward with the assumption that the IP address of the master node is known to all the slave nodes. This is one addition to our initial goals that we hope to implement a very basic slave node discovery protocol which will run on the master. We don’t know if we will be to implement this given the amount of time that we have but as a fallback we will be using static IP address or a configuration file which will contain the IP address of all the nodes so that the communication between nodes is easy.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/anishjain89/15418">Parallel Distributed Key-Value Store</a> is maintained by <a href="https://github.com/anishjain89">anishjain89</a>.</span>
