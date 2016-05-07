@@ -172,6 +172,15 @@ getting overwhelmed by transferring 1MB of data per client request as all reques
 are shown below:</p>
 <iframe width="849.5" height="525.2741666666667" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=1628991510&amp;format=interactive"></iframe>
 
+<p>To improve the latency for big data, we removed master from the critical path of data movement. In the new system, the master would just 
+forward the ip address and port number of the worker chosen to handle the request to the client. The client would then establish a new 
+connection with the worker and get the data directly from it. This optimization reduces data movement as master is no longer needed to
+download data from the worker and stream to the client. This also allows requests to different workers to be served in parallel by removing
+the master's NIC in the data path which was a bottleneck.
+We tried the same workload as before with 1 master and 2 workers with 256 STORE requests of 1MB values. We chose nodeIDs in advance such
+that 128 requests went to each worker. The readings are shown below in comparison to the previous latency values: </p>
+<iframe width="741.5" height="458.4941666666666" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=1855690083&amp;format=interactive"></iframe>
+
 
 
 
