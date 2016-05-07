@@ -25,7 +25,7 @@
 <a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>SUMMARY</strong>
 </h2>
 
-<p>To design a parallel, scalable distributed key-value store which scales using consistent hashing on a cluster of Raspberry Pis.</p>
+<p>To design a parallel distributed key-value store using consistent hashing on a cluster of Raspberry Pis.</p>
 
 <h2>
 <a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>BACKGROUND</strong>
@@ -46,7 +46,11 @@
 <li>Storage load is amortized across multiple nodes</li>
 </ul>
 
-<p>The basic architecture consists of a central coordinator and several storage nodes. The clients send requests to the coordinator which routes the requests to appropriate storage nodes. Request routing decisions are taken based on a consistent-hashing ring. The central coordinator has information about all the storage nodes present in the system. Based on the storage load on individual storage nodes, it takes scaling decisions where addition/deletion of storage nodes is handled using consistent hashing. Migration of data between storage nodes during scaling is handled in the background so that there is no downtime. Storage nodes store the key-value pairs assigned to it in-memory and service requests routed to it. We'll be programming our project in Go as it enables parallelism via low-cost goroutines. The GoRPC package spawns a new goroutine for each request which enables parallelism across multiple requests. </p>
+<p>The basic architecture consists of a central coordinator and several storage nodes. The clients send requests to the coordinator which routes the requests to appropriate storage nodes. Request routing decisions are taken based on a consistent-hashing ring. The central coordinator has information about all the storage nodes present in the system. Storage nodes store the key-value pairs assigned to it in-memory and service requests routed to it. We'll be programming our project in Go as it enables parallelism via low-cost goroutines. The GoRPC package spawns a new goroutine for each request which enables parallelism across multiple requests. </p>
+
+<p>Claim: The simple key-value system store does not have compute intensive tasks therefore it is wasteful to use beefy compute nodes to implement the system as they are very power hungry. </p>
+
+<p>We plan to build this system using wimpy compute nodes (Raspberry Pis) which are power efficient. We want to benchmark the system and comment if it is useful to build a key-value store using Raspberry Pis. We also would like to perform dynamic scaling of the storage nodes in the system as the in-memory data structure on individual nodes start to bloat. We plan to use consistent hashing to redistribute the data among nodes.</p>
 
 <h2>
 <a id="challenges" class="anchor" href="#challenges" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>CHALLENGES</strong>
@@ -57,7 +61,7 @@
 <ul>
 <li>Setting up the cluster of Raspberry Pis: We need to understand how basic CPU usage + networking of the Raspberry Pis work, and also need to make sure that they can talk to each other on a local network. For our prototyping, we'll be connecting the Pis on a local network using switch/hub. </li>
 <li>Setting up the software framework so that all the nodes in the system have required communication channels set up.</li>
-<li>Correctly implementing consistent hashing: This is the crux of our project. We need to ensure that every request is being sent to the appropriate storage node based on it's key following the correct semantics of consistent hashing. We also need to ensure that during scale-in/scale-out data migration based on keys is correct.</li>
+<li>Correctly implementing consistent hashing: This is the crux of our project. We need to ensure that every request is being sent to the appropriate storage node based on it's key following the correct semantics of consistent hashing. </li>
 </ul>
 
 <h2>
@@ -68,7 +72,7 @@
 <li>Hardware
 
 <ul>
-<li>Five Type B 512 MB RAM Raspberry Pis with 8GB flash storage</li>
+<li>Five Type 2 1 GB RAM Raspberry Pis with 8GB flash storage</li>
 <li>TP-link 8 port networking switch</li>
 <li>A whole lot of ethernet cables</li>
 </ul>
@@ -92,9 +96,14 @@
 <p>We want to build a basic system with storage nodes labelled such that they follow the semantics of consistent hashing. We will need to prototype and test the RPC functionality by passing known objects between different nodes in the system.</p>
 </li>
 <li>
-<p>Prototyping scale-out/scale-in:</p>
+<p>Benchmark the system and compare the performance per watt and performance per dollar with beefy compute node:</p>
 
-<p>Fine-tune parameters to find out the correct mix of nodes for different workloads. Ensure that the addition/deletion and migration of data is correct as per the consistent hashing semantics. Profile the behavior of Pis as the in-memory hash tables grow big.</p>
+<p>We want to run few workloads on this system and get benchmarks for absolute performance of the system in terms of latency along with the performance per watt and performance per dollar. Based on these benchmark numbers we want to identify the tradeoffs, if there are any, of using this cluster of wimpy nodes. We want to comment based on these tradeoffs whether or not it is useful to use this system.</p>
+</li>
+<li>
+<p>Identifying any bottleneck in the initial design by benchmarking and optimizing to overcome the bottlenecks</p>
+
+<p>Fine-tune parameters to find out the correct mix of nodes for different workloads. We want to reason the observed behaviour of the system and then based on these reason identify if there are any bottlenecks in the design. If there are some bottlenecks then optimize for those bottlenecks and benchmark again.</p>
 </li>
 </ul>
 
@@ -118,7 +127,7 @@
 <h3>
 <a id="planned-demo" class="anchor" href="#planned-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PLANNED DEMO</h3>
 
-<p>We hope to demo a working model of this proposed small-scale key-value architecture. We would demonstrate all the features guaranteed by our system namely put, get, delete, node join and node exit. We also hope to compare the performance of this distributed key-value store against a single node version of it.</p>
+<p>We hope to demo a working model of this proposed small-scale key-value architecture. We would demonstrate all the features guaranteed by our system namely put, get and delete. We also hope to compare the performance of this distributed key-value store against a single node version of it.</p>
 
 <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PERFORMANCE</h3>
@@ -150,39 +159,16 @@
 <li>April 18 - April 20: Implement correct version of consistent hashing.</li>
 <li>April 21 - April 24: Come up with workloads to test the system and setup cluster on Raspberry Pis.<br>
 </li>
-<li>April 25 - April 28: Implement scaling with data migration. </li>
-<li>April 29 - May 1: Fine tune scaling parameters.</li>
+<li>April 25 - April 28: Implement scaling with data migration.</li>
+<li>April 29 - May 1: Benchmark the system, identify the bottlenecks in the system and optimize.</li>
 <li>May 2 - May 8: Make the system robust. Work on future goals. Make final presentation. Demo!!!</li>
 </ul>
 
 <h2>
 <a id="results" class="anchor" href="#results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>RESULTS</strong>
 </h2>
-<p>We tried running a workload using 1024 requests of 128 byte values. This workload was split across clients ranging from 5 to 100 and was
-run both on Raspberry Pis and Andrew Machines using various configurations like: 1 master 2 workers, 1 master 3 workers and 1 master 4 workers.
-We observed that Pis scaled poorly because of a single master but the maximum latency was still below 100ms. For any decent web application, 
-this is more than acceptable. As a result, Pis could be an acceptable replacement for disk based powerful compute servers for such applications.</p>
-<p>Performance comparison between Raspberry Pis and Andrew Machines:</p>
-<iframe width="735.3169087974175" height="454.19197976760483" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=330205461&amp;format=interactive"></iframe>
 
-<p>We also observed that increasing the size of values stored in the key-value store gives similar performance upto Values of size 1KB. Above
-that, especially on higher sizes like 1MB values, continuously streaming data increases average latency upto 2400 ms. This is definitely not 
-acceptable especially for a web application which requires latencies in the order of 100ms. This is mainly due to the NIC of the single master
-getting overwhelmed by transferring 1MB of data per client request as all requests are streamed from the worker->master->client. Our findings
-are shown below:</p>
-<iframe width="849.5" height="525.2741666666667" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=1628991510&amp;format=interactive"></iframe>
-
-<p>To improve the latency for big data, we removed master from the critical path of data movement. In the new system, the master would just 
-forward the ip address and port number of the worker chosen to handle the request to the client. The client would then establish a new 
-connection with the worker and get the data directly from it. This optimization reduces data movement as master is no longer needed to
-download data from the worker and stream to the client. This also allows requests to different workers to be served in parallel by removing
-the master's NIC in the data path which was a bottleneck.
-We tried the same workload as before with 1 master and 2 workers with 256 STORE requests of 1MB values. We chose nodeIDs in advance such
-that 128 requests went to each worker. The readings are shown below in comparison to the previous latency values: </p>
-<iframe width="741.5" height="458.4941666666666" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=1855690083&amp;format=interactive"></iframe>
-
-
-
+<p>Performance comparison:</p>
 
 
 
@@ -233,7 +219,7 @@ that 128 requests went to each worker. The readings are shown below in compariso
 
 <hr>
 
-<p>Our goals for the project are pretty much the same as we had initially proposed. In context of what would be feasible to demo on the project presentation day we think we will demonstrate scale-out of the cluster. We plan to make nodes Join the cluster as the load on a single data node increases so that performance comparable to (or some factor of) commercial machines can be achieved. Therefore we hope to demo node addition and data migration among the nodes as one of the tests.  Apart from that we plan to show graph of average response times as the number of clients grow, performance/watt and performance/dollar. For the performance/watt we, for now, plan to use the power numbers that are mentioned in the hardware specification document of the concerned machines that we are using. One of the things that we had planned initially to demonstrate but might not do it for the final presentation is to demonstrate the scale-in of the cluster. This is primarily because as of now we are not sure what heuristics to use to scale-in the cluster. If we are able to come up with a good heuristic and test in time then we can certainly demonstrate that as well.
+<p>Our goals for the project are pretty much the same as we had initially proposed. Only thing changed is that initially we were hoping to perform dynamic scaling of the system but we don't think we will be able to write an efficient implementation (without a big lock) in the given amount of time. In context of what would be feasible to demo on the project presentation day we think we will demonstrate working model of our system. We plan to show graph of average response times as the number of clients grow, performance/watt and performance/dollar. For the performance/watt we, for now, plan to use the power numbers that are mentioned in the hardware specification document of the concerned machines that we are using.
 To perform a live demo we need to go forward with the assumption that the IP address of the master node is known to all the slave nodes. This is one addition to our initial goals that we hope to implement a very basic slave node discovery protocol which will run on the master. We don’t know if we will be to implement this given the amount of time that we have but as a fallback we will be using static IP address or a configuration file which will contain the IP address of all the nodes so that the communication between nodes is easy.</p>
 
       <footer class="site-footer">
