@@ -158,9 +158,21 @@
 <h2>
 <a id="results" class="anchor" href="#results" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>RESULTS</strong>
 </h2>
-
-<p>Performance comparison:</p>
+<p>We tried running a workload using 1024 requests of 128 byte values. This workload was split across clients ranging from 5 to 100 and was
+run both on Raspberry Pis and Andrew Machines using various configurations like: 1 master 2 workers, 1 master 3 workers and 1 master 4 workers.
+We observed that Pis scaled poorly because of a single master but the maximum latency was still below 100ms. For any decent web application, 
+this is more than acceptable. As a result, Pis could be an acceptable replacement for disk based powerful compute servers for such applications.</p>
+<p>Performance comparison between Raspberry Pis and Andrew Machines:</p>
 <iframe width="735.3169087974175" height="454.19197976760483" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=330205461&amp;format=interactive"></iframe>
+
+<p>We also observed that increasing the size of values stored in the key-value store gives similar performance upto Values of size 1KB. Above
+that, especially on higher sizes like 1MB values, continuously streaming data increases average latency upto 2400 ms. This is definitely not 
+acceptable especially for a web application which requires latencies in the order of 100ms. This is mainly due to the NIC of the single master
+getting overwhelmed by transferring 1MB of data per client request as all requests are streamed from the worker->master->client. Our findings
+are shown below:</p>
+<iframe width="849.5" height="525.2741666666667" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=1628991510&amp;format=interactive"></iframe>
+
+
 
 
 
