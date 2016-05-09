@@ -176,6 +176,11 @@ this is more than acceptable. As a result, Pis could be an acceptable replacemen
 <p>Performance comparison between Raspberry Pis and Andrew Machines:</p>
 <iframe width="735.3169087974175" height="454.19197976760483" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=330205461&amp;format=interactive"></iframe>
 
+<p>One of the main reasons for using Raspberry Pis was because they are power efficient as Raspberry Pis consume 2.5W of power on peak compared
+to an Andrew Machine which uses 500W of power on average. This is because Andrew Machine was powerful high frequency processors and mechanical
+disks which consume a lot of power. Our performance/watt graph below gives an idea of how efficient Raspberry Pis are:</p>
+<iframe width="987" height="610" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/1lTiwtzox79wT1nOl209BIAOelFjeM35oupaCQtPN0bI/pubchart?oid=1640753068&amp;format=interactive"></iframe>
+
 <p>We also observed that increasing the size of values stored in the key-value store gives similar performance upto Values of size 1KB. Above
 that, especially on higher sizes like 1MB values, continuously streaming data increases average latency upto 2400 ms. This is definitely not 
 acceptable especially for a web application which requires latencies in the order of 100ms. This is mainly due to the NIC of the single master
